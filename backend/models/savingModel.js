@@ -17,6 +17,10 @@ const savingSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  customerNID:{
+    type: String,
+    required: true
+  }
 })
 
 module.exports = mongoose.model('Savings', savingSchema)

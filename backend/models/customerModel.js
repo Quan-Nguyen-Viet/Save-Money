@@ -37,6 +37,10 @@ const customerSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  passWord:{
+    type: String,
+    required: true
+  },
   signature:{
     type: Image,
     required: true

@@ -8,14 +8,43 @@ const savingCtrl = {
   
   deleteSavingAccount: async(req, res) =>{},
 
+  updateSavingAccount: async(req, res) =>{},
+
   getNonTermIR: async(req, res) =>{
     try {
-      const userID = req.Customers._id
+      const userID = req.Savings._id
+      const balance = req.Savings.balance
+      const interestRate = req.Savings.interestRate
+      const day = req.Savings.day
+      const total = async(userID, balance, interestRate, day) =>{
+        await Customers.findByIdAndUpdate({_id: userID},{
+          total: balance + (balance*(interestRate/360))*day
+        })
+      }
+      balance = total
+      balance.save()
+      res.send(total)
     } catch (err) {
       console.error(err)
     }
   },
-  getNonTermIR: async(req, res) =>{}
+  get3MTermIR: async(req, res) =>{
+    try {
+      const userID = req.Savings._id
+      const balance = req.Savings.balance
+      const interestRate = req.Savings.interestRate
+      const total = async(userID, balance, interestRate) =>{
+        await Customers.findByIdAndUpdate({_id: userID},{
+          total: balance + (balance*(interestRate/12)*3)
+        })
+      }
+      balance = total
+      balance.save()
+      res.send(total)
+    } catch (err) {
+      console.error(err)
+    }
+  }
   /*
   getNonTermIR: async(id, balance, interestRate) =>{
     await Customers.findByIdAndUpdate({_id: id},{

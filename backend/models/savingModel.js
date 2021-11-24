@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const schedule = require('node-schedule')
 
 const savingSchema = mongoose.Schema({
   balanced:{
@@ -20,6 +21,18 @@ const savingSchema = mongoose.Schema({
   customerNID:{
     type: String,
     required: true
+  },
+  total:{
+    type: Number,
+    default: 0
+  },
+  interestRate:{
+    type: Number,
+    default: 0,
+    required: true
+  },
+  durationEndDate:{
+    durationEndDate: createdDate + duration + duration*cycles
   }
 })
 

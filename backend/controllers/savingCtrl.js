@@ -2,7 +2,9 @@ const Savings = require('../models/savingModel')
 const Customers = require('../models/customerModel')
 
 const savingCtrl = {
-  getSavingAccount: async (req, res) =>{},
+  getSavingAccount: async (req, res) =>{
+    const response = await Savings.find({ userID: req.Savings._id})
+  },
   
   createSavingAccount: async(req, res) =>{},
   
@@ -16,13 +18,11 @@ const savingCtrl = {
       const balance = req.Savings.balance
       const interestRate = req.Savings.interestRate
       const day = req.Savings.day
-      const total = async(userID, balance, interestRate, day) =>{
-        await Customers.findByIdAndUpdate({_id: userID},{
-          total: balance + (balance*(interestRate/360))*day
-        })
-      }
+      const total = req.Savings.total
+      await Customers.findByIdAndUpdate({_id: userID},{
+        total: balance + (balance*(interestRate/360))*day
+      })
       balance = total
-      balance.save()
       res.send(total)
     } catch (err) {
       console.error(err)
@@ -32,14 +32,15 @@ const savingCtrl = {
     try {
       const userID = req.Savings._id
       const balance = req.Savings.balance
-      const interestRate = req.Savings.interestRate
+      const interestRate = 0.035
+      const cycles = req.Savings.cycles
+      const duration = req.Savings.cycles
       const total = async(userID, balance, interestRate) =>{
-        await Customers.findByIdAndUpdate({_id: userID},{
-          total: balance + (balance*(interestRate/12)*3)
+        await Savings.findByIdAndUpdate({_id: userID},{
+          total: balance + balance*(interestRate+cycles*0.03)*(duration + duration*cycles)/360 
         })
       }
       balance = total
-      balance.save()
       res.send(total)
     } catch (err) {
       console.error(err)

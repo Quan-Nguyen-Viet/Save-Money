@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const schedule = require('node-schedule')
 
 const savingSchema = mongoose.Schema({
   balanced:{
@@ -8,11 +7,13 @@ const savingSchema = mongoose.Schema({
   },
   duration:{
     type: Number,
-    default: 0
+    default: 0,
+    required: true
   },
   cycles:{
     type: Number,
-    default: 0
+    default: 0,
+    required: true
   },
   createdDate:{
     type: Date,

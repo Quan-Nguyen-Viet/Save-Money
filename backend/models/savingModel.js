@@ -1,39 +1,29 @@
-const mongoose = require('mongoose')
-const schedule = require('node-schedule')
+import mongoose from "mongoose";
 
-const savingSchema = mongoose.Schema({
-  balanced:{
-    type: Number,
-    required: true
-  },
-  duration:{
-    type: Number,
-    default: 0
-  },
-  cycles:{
-    type: Number,
-    default: 0
-  },
-  createdDate:{
-    type: Date,
-    default: Date.now
-  },
-  customerNID:{
-    type: String,
-    required: true
-  },
-  total:{
-    type: Number,
-    default: 0
-  },
-  interestRate:{
-    type: Number,
-    default: 0,
-    required: true
-  },
-  durationEndDate:{
-    durationEndDate: createdDate + duration + duration*cycles
-  }
-})
+const schema = new mongoose.Schema({
+    balanced: {
+        type: Number,
+        required: true
+    },
+    status: {
+        type: Number,
+        default: 1 //1 la dang gui, 0 la da rut, 2 la da xoa (user xoa)
+    },
+    cycles: {
+        type: Number,
+        default: 0
+    },
+    duration: { //days
+        type: Number,
+        required: true
+    },
+    stopDate: {
+        type: Date,
+    },
+    userID: {
+        type: Number,
+        required: true
+    },
+}, { timestamps: true })
 
-module.exports = mongoose.model('Savings', savingSchema)
+export const SavingModel = mongoose.model('Saving', schema);

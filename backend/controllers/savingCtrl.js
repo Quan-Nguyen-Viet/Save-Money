@@ -1,9 +1,22 @@
 const Savings = require('../models/savingModel')
 const Customers = require('../models/customerModel')
+const schedule = require('node-schedule')
 
 const savingCtrl = {
   getSavingAccount: async (req, res) =>{
-    const response = await Savings.find({ userID: req.Savings._id})
+    try {
+      const response = await Savings.find({ userId: req.user._id})
+
+    if (!response) {
+      return res.status(400).json({
+        message: 'Unable to find your account'
+      })
+    }
+
+    res.send(response)
+    } catch (err) {
+      console.error(err)
+    }
   },
   
   createSavingAccount: async(req, res) =>{},
@@ -17,13 +30,15 @@ const savingCtrl = {
       const userID = req.Savings._id
       const balance = req.Savings.balance
       const interestRate = req.Savings.interestRate
-      const day = req.Savings.day
       const total = req.Savings.total
-      await Customers.findByIdAndUpdate({_id: userID},{
-        total: balance + (balance*(interestRate/360))*day
+      const duration = req.Savings.duration
+      await Savings.findByIdAndUpdate({_id: userID},{
+        total = schedule.scheduledJobs('00 00 00 * * 0-6', ()=>{
+          total = balance + (balance*(interestRate/360)*duration)
+          balance = total
+        })
       })
-      balance = total
-      res.send(total)
+      res.json({msg: "updated"})
     } catch (err) {
       console.error(err)
     }
@@ -35,28 +50,19 @@ const savingCtrl = {
       const interestRate = 0.035
       const cycles = req.Savings.cycles
       const duration = req.Savings.cycles
-      const total = async(userID, balance, interestRate) =>{
-        await Savings.findByIdAndUpdate({_id: userID},{
-          total: balance + balance*(interestRate+cycles*0.03)*(duration + duration*cycles)/360 
+      const total = req.Savings.total
+      await Savings.findByIdAndUpdate({_id: userID},{
+        total = schedule.scheduledJobs('00 00 00 * * 0-6', ()=>{
+          total = balance + balance*(0.035+cycles*0.03)*(duration + duration*cycles)/360
+          balance = total
         })
-      }
-      balance = total
-      res.send(total)
+      })
+      res.json({msg: "updated"})
     } catch (err) {
       console.error(err)
     }
   }
-  /*
-  getNonTermIR: async(id, balance, interestRate) =>{
-    await Customers.findByIdAndUpdate({_id: id},{
-      getNonTermIR: (balance*(interestRate/360))
-    })
-  },
-  get3MTermIR: async(id, balance, interestRate) =>{
-    await Customers.findByIdAndUpdate({_id: id},{
-      get3MTermIR: (balance*(interestRate/12)*3)
-    })
-  }*/
+  
 }
 
 module.exports = savingCtrl

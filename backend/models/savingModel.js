@@ -5,6 +5,9 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    balancedWithdrawed: {
+        type: Number
+    },
     status: {
         type: Number,
         default: 1 //1 la dang gui, 0 la da rut, 2 la da xoa (user xoa)
@@ -24,6 +27,10 @@ const schema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    inContract: {
+        type: Number,
+        default: (new Date()).getTime()
+    }
 }, { timestamps: true })
 
 export const SavingModel = mongoose.model('Saving', schema);

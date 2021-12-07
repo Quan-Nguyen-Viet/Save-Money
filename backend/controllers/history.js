@@ -1,5 +1,4 @@
-import { find } from "lodash"
-import { HistoryModel } from "../models/histotyModel"
+import { HistoryModel } from "../models/histotyModel.js"
 
 export const getHistory = async (req, res) => {
   try{

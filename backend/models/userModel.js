@@ -18,7 +18,38 @@ const userSchema = new mongoose.Schema({
   role: {
       type: Number,
       default: 0
-  }
+  },
+  nationalID: {
+    type: Number,
+    required: true
+  },
+  gender: {
+    type: String,
+    default: "none"
+  },
+  dob: {
+    type: Date,
+  },
+  phoneNumber: {
+    type: Number,
+    required: true
+  },
+  address: {
+    type: String,
+  },
+  passportID: {
+    type: Number,
+
+  },
+  nationality: {
+    type: String,
+
+  },
+  balanced: {
+    type: Number,
+    default: 0
+  },
+
 }, {
   timestamps: true
 })

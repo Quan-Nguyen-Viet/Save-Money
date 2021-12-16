@@ -1,9 +1,12 @@
 import express from 'express';
-import { getHistory, createHistory } from '../controllers/history.js';
+import { getHistory, createHistory, getHistoryById } from '../controllers/history.js';
+import { auth } from '../middlewares/auth.js';
+import { authAdmin } from '../middlewares/authAdmin.js';
 
 const router = express.Router();
 
-router.get('/', getHistory);
-router.post('/', createHistory);
+router.get('/allhistory', auth, authAdmin, getHistory);
+router.post('/createhistory', createHistory);
+router.get('/userhistory', auth, getHistoryById);
 
 export default router;

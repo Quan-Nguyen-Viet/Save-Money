@@ -3,12 +3,21 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {} from 'dotenv/config'
 
+export const getAllUser = async(req, res) =>{
+  try{
+    const users = await UserModel.find()
+    res.json(users)
+  } catch (err){
+    return res.status(500).json({msg: err.message})
+  }
+}
 export const register = async(req, res) =>{
   try {
     const {
       name, 
       email, 
-      password
+      password,
+      role
     } = req.body;
 
     const user = await UserModel.findOne({email})
@@ -20,7 +29,7 @@ export const register = async(req, res) =>{
     // Password Encryption
     const passwordHash = await bcrypt.hash(password, 10)
     const newUser = new UserModel({
-        name, email, password: passwordHash
+        name, email, password: passwordHash, role
     })
 
     // Save mongodb
@@ -93,6 +102,17 @@ export const getUser = async (req, res) =>{
       if(!user) return res.status(400).json({msg: "User does not exist."})
 
       res.json(user)
+  } catch (err) {
+      return res.status(500).json({msg: err.message})
+  }
+}
+
+export const deleteUser = async (req, res) =>{
+  try {
+      const user = await UserModel.findByIdAndDelete(req.user.id)
+      if(!user) return res.status(400).json({msg: "User does not exist."})
+
+      res.json({msg: "Deleted user complete"})
   } catch (err) {
       return res.status(500).json({msg: err.message})
   }

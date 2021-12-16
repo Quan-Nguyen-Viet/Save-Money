@@ -12,12 +12,45 @@ export const getHistory = async (req, res) => {
 
 export const createHistory = async (req, res) => {
   try {
-      const newHistory = req.body;
-      const history = new HistoryModel(newHistory);
+      const {
+        userid,
+        detail
+      } = req.body;
+      const history = await HistoryModel.findOne({userid})
+      if(history) return res.status(400).json({msg: "This user history already exists."})
+      const newHistory = new UserModel({
+        userid, detail
+      })
       await history.save();
-      res.status(200).json(history);
+      res.status(200).json({msg: "Create history success"});
   } catch (err) {
       res.status(500).json({ error: err});
+  }
+}
+
+export const updateHistory = async(req, res) =>{
+  try{
+    const { 
+      userid,
+      detail
+    } = req.body
+    if(!userid) return res.status(400).json({msg: "UserID is empty"})
+    if(!detail) return res.status(400).json({msg: "Detail is empty"})
+    
+    await HistoryModel.findByIdAndUpdate({userid}, {detail})
+
+    res.json({msg: "Update complete"})
+  } catch (err){
+    res.status(500).json({ error: err})
+  }
+}
+
+export const deleteHistory = async(req, res) =>{
+  try{
+    await HistoryModel.findByIdAndDelete(req.params.id)
+    res.json({msg: "Delete complete"})
+  } catch (err){
+    return res.status(500).json({msg: err.message})
   }
 }
 

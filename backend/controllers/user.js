@@ -14,22 +14,58 @@ export const getAllUser = async(req, res) =>{
 export const register = async(req, res) =>{
   try {
     const {
-      name, 
+      name,
+      username, 
       email, 
       password,
-      role
+      role,
+      nationalid,
+      gender,
+      dob,
+      phonenumber,
+      address,
+      passportid,
+      nationality,
+      creditcard,
+      creditcardbrand,
+      carddate
     } = req.body;
 
+    
     const user = await UserModel.findOne({email})
     if(user) return res.status(400).json({msg: "The email already exists."})
-
     if(password.length < 6) 
         return res.status(400).json({msg: "Password is at least 6 characters long."})
-
     // Password Encryption
     const passwordHash = await bcrypt.hash(password, 10)
+    if(!name) return res.status(400).json({msg: "Please enter your full name"})
+    if(!username) return res.status(400).json({msg: "Please enter your user name"})
+    if(!nationalid) return res.status(400).json({msg: "Please enter your id."})
+    if(!gender) return res.status(400).json({msg: "Please choose your gender."})
+    if(!dob) return res.status(400).json({msg: "Please enter your date of birth."})
+    if(!phonenumber) return res.status(400).json({msg: "Please enter your phone number."})
+    if(!address) return res.status(400).json({msg: "Please enter your address."})
+    if(!passportid) return res.status(400).json({msg: "Please enter your your passport ID."})
+    if(!dob) return res.status(400).json({msg: "Please enter your date of birth."})
+    if(!nationality) return res.status(400).json({msg: "Please enter your nationality."})
+    if(!creditcard) return res.status(400).json({msg: "Please enter your credit card number."})
+    if(!creditcardbrand) return res.status(400).json({msg: "Please enter your credit card issuer."})
     const newUser = new UserModel({
-        name, email, password: passwordHash, role
+        name,
+        username, 
+        email, 
+        password: passwordHash, 
+        role,
+        nationalid,
+        gender,
+        dob,
+        phonenumber,
+        address,
+        passportid,
+        nationality,
+        creditcard,
+        creditcardbrand,
+        carddate
     })
 
     // Save mongodb
@@ -61,7 +97,7 @@ export const login = async (req, res) => {
         path: '/user/refresh_token',
         maxAge: 7*24*60*60*1000 // 7d
       })
-
+      await UserModel.findOneAndUpdate({email: email}, { jwt: accesstoken})
       res.json({accesstoken})
 
   } catch (err) {

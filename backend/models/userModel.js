@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
       required: true,
       trim: true
   },
+  username: {
+      type: String,
+      required: true
+  },
   email: {
       type: String,
       required: true,
@@ -19,7 +23,7 @@ const userSchema = new mongoose.Schema({
       type: Number,
       default: 0
   },
-  nationalID: {
+  nationalid: {
     type: Number,
     required: true
   },
@@ -28,28 +32,41 @@ const userSchema = new mongoose.Schema({
     default: "none"
   },
   dob: {
-    type: Date,
+    type: String,
+    required: true
   },
-  phoneNumber: {
-    type: Number,
+  phonenumber: {
+    type: String,
     required: true
   },
   address: {
     type: String,
+    required: true
   },
-  passportID: {
+  passportid: {
     type: Number,
-
+    required: true
   },
   nationality: {
-    type: String,
-
+    type: String
+  },
+  creditcard: {
+    type: Number
+  },
+  creditcardbrand: {
+    type: String
+  },
+  carddate: {
+    type: String
   },
   balanced: {
     type: Number,
     default: 0
   },
-
+  jwt: {
+    type: String,
+    default: ""
+  }
 }, {
   timestamps: true
 })

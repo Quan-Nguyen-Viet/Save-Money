@@ -54,7 +54,7 @@ export const withdrawSaving =  async (req, res) => {
         const savingid = req.body;
         console.log('test', savingid);
         const getsaving =  await SavingModel.findOne({_id: savingid._id});
-        if(getsaving.status != 1) return next();
+        if(getsaving.status != 1) return res.status(500).json({error: 'withdrawed'});
         var interestRate = 0;
         // % lai suat
         switch(getsaving.duration){

@@ -20,6 +20,7 @@ export const createSaving = async (req, res) => {
         if(user.balanced < newSaving.balanced) return next(); //kiem tra so du tai khoan voi so tien gui
         
         const usernewBalanced = user.balanced - newSaving.balanced;
+        console.log("newuserblanced: ", usernewBalanced);
         let updateUser = await UserModel.findByIdAndUpdate({_id: newSaving.userID}, { balanced: usernewBalanced}, { new: true }); //update so du tai khoan
         const saving = new SavingModel(newSaving);
         await saving.save();
@@ -52,8 +53,8 @@ export const withdrawSaving =  async (req, res) => {
     try {
         const savingid = req.body;
         console.log('test', savingid);
-        const getsaving =  await SavingModel.findOne({_id: req.body._id});
-
+        const getsaving =  await SavingModel.findOne({_id: savingid._id});
+        if(getsaving.status != 1) return next();
         var interestRate = 0;
         // % lai suat
         switch(getsaving.duration){
@@ -76,9 +77,9 @@ export const withdrawSaving =  async (req, res) => {
                 interestRate = 0.053;
 
         }
-        const date = Math.floor((((new Date()).getTime() + 864000000) - getsaving.inContract)/86400000);
+        const date = Math.floor((((new Date()).getTime() + 32154000000) - getsaving.inContract)/86400000);
         const cycles = Math.floor(date/getsaving.duration);
-        var bonusRate = 0.015*(cycles-1);
+        var bonusRate = 0.0015*(cycles-1);
         if (bonusRate < 0) { 
             bonusRate = 0;
         }
@@ -86,6 +87,7 @@ export const withdrawSaving =  async (req, res) => {
         if (finalRate > 0.055) {
             finalRate = 0.055;
         }
+        console.log("finalRate: ", finalRate);
         const termBalanced = getsaving.balanced * (finalRate)*(getsaving.duration*cycles)/360;
         const unlimitBalanced = getsaving.balanced * ((date - getsaving.duration * cycles) *0.015 / 360);
         const withdrawBalance = getsaving.balanced + termBalanced + unlimitBalanced;
@@ -94,7 +96,7 @@ export const withdrawSaving =  async (req, res) => {
         console.log('unbalanced', unlimitBalanced);
         console.log('withdrawbalanced', withdrawBalance);
 
-        const updateSaving = await SavingModel.findByIdAndUpdate(getSaving._id ,
+        const updateSaving = await SavingModel.findByIdAndUpdate(getsaving._id ,
             {
                 balancedWithdrawed: withdrawBalance,
                 status: 0,
@@ -102,6 +104,7 @@ export const withdrawSaving =  async (req, res) => {
             },
             { new: true }
         );
+        console.log("checkpoint");
         // const saving = await SavingModel.findByIdAndUpdate(
         //     { _id: savingid },
         //     {
@@ -109,11 +112,15 @@ export const withdrawSaving =  async (req, res) => {
         //     },
         //     { new: true}
         // );
-        const updateBalanced = await UserModel.findByIdAndUpdate(getSaving.userID,
-            { balanced: updateBalanced.balanced + withdrawBalance },
-            { new: true });
-
-        updateSaving.userNewBalaned = updateBalanced.balanced;    
+        const userInfo = await UserModel.findById(getsaving.userID);
+        console.log("checkpoint", getsaving.userID);
+        const userNewBalanced = userInfo.balanced + withdrawBalance;
+        console.log("checkpoint", userNewBalanced);
+        const updateBalanced = await UserModel.findByIdAndUpdate(getsaving.userID,
+            { balanced: userNewBalanced },
+            { new: true }
+        );
+        console.log("checkpoint");
         res.status(200).json(updateSaving);
         
         

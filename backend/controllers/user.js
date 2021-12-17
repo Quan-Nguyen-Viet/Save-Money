@@ -79,6 +79,22 @@ export const register = async(req, res) =>{
 }
 }
 
+export const deposit = async(req, res) => {
+  try {
+    const inputInfo = req.body;
+    const userInfo = await UserModel.findById(inputInfo._id);
+    const newbalanced = inputInfo.moneyDeposit + userInfo.balanced;
+    const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
+
+    
+
+    res.status(200).json(userUpdate);
+    
+  } catch (err) {
+    res.status(500).json({error: err});
+  }
+}
+
 export const login = async (req, res) => {
     try {
       const {email, password} = req.body;

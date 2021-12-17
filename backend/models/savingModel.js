@@ -6,7 +6,8 @@ const schema = new mongoose.Schema({
         required: true
     },
     balancedWithdrawed: {
-        type: Number
+        type: Number,
+        default: 0
     },
     status: {
         type: Number,
@@ -24,7 +25,7 @@ const schema = new mongoose.Schema({
         type: Date,
     },
     userID: {
-        type: Number,
+        type: String,
         required: true
     },
     inContract: {

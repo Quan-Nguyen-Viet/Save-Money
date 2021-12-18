@@ -171,43 +171,30 @@ export const deleteUser = async (req, res) =>{
 
 export const updateUser = async (req, res) =>{
   try {
-    const {
-        name,
-        username, 
-        email, 
-        role,
-        nationalid,
-        gender,
-        dob,
-        phonenumber,
-        address,
-        passportid,
-        nationality,
-        creditcard,
-        creditcardbrand,
-        carddate
-    } = req.body;
     
+    const inputInfo = req.body;
 
-    await UserModel.findOneAndUpdate({_id: req.params.id}, {
-        name,
-        username, 
-        email, 
-        role,
-        nationalid,
-        gender,
-        dob,
-        phonenumber,
-        address,
-        passportid,
-        nationality,
-        creditcard,
-        creditcardbrand,
-        carddate
-    }, { new: true })
+    const userUpdate = await UserModel.findOneAndUpdate({_id: req.params.id}, {
+        name: inputInfo.name,
+        username: inputInfo.username, 
+        email: inputInfo.email, 
+        role: inputInfo.role,
+        nationalid: inputInfo.nationalid,
+        gender: inputInfo.gender,
+        dob: inputInfo.dob,
+        phonenumber: inputInfo.phonenumber,
+        address: inputInfo.phonenumber,
+        passportid: inputInfo.passportid,
+        nationality: inputInfo.nationality,
+        creditcard: inputInfo.creditcard,
+        creditcardbrand: inputInfo.creditcardbrand,
+        carddate: inputInfo.carddate
+    }, { new: true }).select('-password')
 
+    console.log(inputInfo)
+    console.log(userUpdate)
     console.log(req.params.id)
-    res.json({msg: "Update user complete"})
+    res.json({msg: "Update user complete", userUpdate})
   } catch (err) {
       return res.status(500).json({msg: err.message})
   }

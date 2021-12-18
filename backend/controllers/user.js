@@ -177,7 +177,8 @@ export const updateUser = async (req, res) =>{
     const userUpdate = await UserModel.findOneAndUpdate({_id: req.params.id}, {
         name: inputInfo.name,
         username: inputInfo.username, 
-        email: inputInfo.email, 
+        email: inputInfo.email,
+        password: inputInfo.password,
         role: inputInfo.role,
         nationalid: inputInfo.nationalid,
         gender: inputInfo.gender,
@@ -189,11 +190,9 @@ export const updateUser = async (req, res) =>{
         creditcard: inputInfo.creditcard,
         creditcardbrand: inputInfo.creditcardbrand,
         carddate: inputInfo.carddate
-    }, { new: true }).select('-password')
+    }, { new: true })
 
-    console.log(inputInfo)
-    console.log(userUpdate)
-    console.log(req.params.id)
+
     res.json({msg: "Update user complete", userUpdate})
   } catch (err) {
       return res.status(500).json({msg: err.message})

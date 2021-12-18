@@ -173,12 +173,12 @@ export const updateUser = async (req, res) =>{
   try {
     
     const inputInfo = req.body;
-
+    const passwordHash = await bcrypt.hash(inputInfo.password, 10)
     const userUpdate = await UserModel.findOneAndUpdate({_id: req.params.id}, {
         name: inputInfo.name,
         username: inputInfo.username, 
         email: inputInfo.email,
-        password: inputInfo.password,
+        password: passwordHash,
         role: inputInfo.role,
         nationalid: inputInfo.nationalid,
         gender: inputInfo.gender,

@@ -21,7 +21,7 @@ export const createHistory = async (req, res) => {
       const newHistory = new UserModel({
         userid, detail
       })
-      await history.save();
+      await newHistory.save();
       res.status(200).json({msg: "Create history success"});
   } catch (err) {
       res.status(500).json({ error: err});
@@ -37,7 +37,7 @@ export const updateHistory = async(req, res) =>{
     if(!userid) return res.status(400).json({msg: "UserID is empty"})
     if(!detail) return res.status(400).json({msg: "Detail is empty"})
     
-    await HistoryModel.findByIdAndUpdate({userid}, {detail})
+    await HistoryModel.findOneAndUpdate({_id: req.params.id}, {userid, detail})
 
     res.json({msg: "Update complete"})
   } catch (err){

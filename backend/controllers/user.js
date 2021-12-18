@@ -150,7 +150,7 @@ export const refreshToken = (req, res) =>{
 }
 export const getUser = async (req, res) =>{
   try {
-      const user = await UserModel.findById(req.user.id).select('-password')
+      const user = await UserModel.findById(req.params.id).select('-password')
       if(!user) return res.status(400).json({msg: "User does not exist."})
 
       res.json(user)
@@ -204,9 +204,10 @@ export const updateUser = async (req, res) =>{
         creditcard,
         creditcardbrand,
         carddate
-    })
+    }, { new: true })
 
-      res.json({msg: "Update user complete"})
+    console.log(req.params.id)
+    res.json({msg: "Update user complete"})
   } catch (err) {
       return res.status(500).json({msg: err.message})
   }

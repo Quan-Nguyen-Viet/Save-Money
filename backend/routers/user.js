@@ -15,7 +15,7 @@ router.delete('/deleteuser/:id', auth, authAdmin, deleteUser);
 
 router.get('/allusers', auth, authAdmin,getAllUser);
 
-router.post('/getusers/:id', auth, getUser);
+router.get('/getusers/:id', getUser);
 
 router.post('/deposit', deposit)
 

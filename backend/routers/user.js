@@ -1,5 +1,8 @@
 import express from 'express';
-import { register, login, logout, refreshToken, getUser, deleteUser, getAllUser, deposit } from '../controllers/user.js';
+import { register, login, logout, refreshToken, getUser, deleteUser, getAllUser, updateUser, deposit } from '../controllers/user.js';
+import { auth } from '../middlewares/auth.js';
+import { authAdmin } from '../middlewares/authAdmin.js';
+
 const router = express.Router();
 
 router.post('/register', register);
@@ -8,12 +11,14 @@ router.post('/login', login);
 
 router.get('/logout', logout);
 
-router.delete('/delete/:id', deleteUser);
+router.delete('/deleteuser/:id', auth, authAdmin, deleteUser);
 
-router.get('/allUsers', getAllUser);
+router.get('/allusers', auth, authAdmin,getAllUser);
 
-router.post('/users/:id', getUser);
+router.post('/getusers/:id', auth, getUser);
 
 router.post('/deposit', deposit)
+
+router.put('/updateuser/:id',  updateUser);
 
 export default router;

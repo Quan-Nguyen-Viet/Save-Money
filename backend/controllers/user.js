@@ -114,8 +114,8 @@ export const login = async (req, res) => {
         maxAge: 7*24*60*60*1000 // 7d
       })
       await UserModel.findOneAndUpdate({email: email}, { jwt: accesstoken})
-      res.json({accesstoken})
-
+      const ruser = await UserModel.findOne({email}).select("-password")
+      res.json({accesstoken, ruser})
   } catch (err) {
       return res.status(500).json({msg: err.message})
   }
@@ -161,17 +161,59 @@ export const getUser = async (req, res) =>{
 
 export const deleteUser = async (req, res) =>{
   try {
-      const user = await UserModel.findByIdAndDelete(req.user.id)
-      if(!user) return res.status(400).json({msg: "User does not exist."})
+      await UserModel.findByIdAndDelete(req.params.id)
 
-      res.json({msg: "Deleted user complete"})
+      res.json({msg: "Delete user complete"})
+  } catch (err) {
+      return res.status(500).json({msg: err.message})
+  }
+}
+
+export const updateUser = async (req, res) =>{
+  try {
+    const {
+        name,
+        username, 
+        email, 
+        role,
+        nationalid,
+        gender,
+        dob,
+        phonenumber,
+        address,
+        passportid,
+        nationality,
+        creditcard,
+        creditcardbrand,
+        carddate
+    } = req.body;
+    
+
+    await UserModel.findOneAndUpdate({_id: req.params.id}, {
+        name,
+        username, 
+        email, 
+        role,
+        nationalid,
+        gender,
+        dob,
+        phonenumber,
+        address,
+        passportid,
+        nationality,
+        creditcard,
+        creditcardbrand,
+        carddate
+    })
+
+      res.json({msg: "Update user complete"})
   } catch (err) {
       return res.status(500).json({msg: err.message})
   }
 }
 
 const createAccessToken = (user) =>{
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10m'})
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30m'})
 }
 
 const createRefreshToken = (user) =>{

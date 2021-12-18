@@ -48,6 +48,65 @@ export const getallSavingbyUserID = async (req, res) => {
     }
 }
 
+export const getSavingBySavingID = async (req, res) => {
+    try{
+        const savingid = req.body;
+        var getsaving =  await SavingModel.findOne({_id: savingid._id});
+        console.log('saving', getsaving);
+        var interestRate = 0;
+        // % lai suat
+        switch(getsaving.duration){
+            case 30:
+                interestRate = 0.03;
+                break;
+            case 90:
+                interestRate = 0.033;
+                break;
+            case 180:
+                interestRate = 0.04;
+                break;
+            case 270:
+                interestRate = 0.04;
+                break;
+            case 360:
+                interestRate = 0.055;
+                break;
+            default: 
+                interestRate = 0.053;
+
+        }
+        const date = Math.floor((((new Date()).getTime() + 32154000000) - getsaving.inContract)/86400000);
+        const cycles = Math.floor(date/getsaving.duration);
+        var bonusRate = 0.0015*(cycles-1);
+        if (bonusRate < 0) { 
+            bonusRate = 0;
+        }
+        var finalRate =  interestRate + bonusRate;
+        if (finalRate > 0.055) {
+            finalRate = 0.055;
+        }
+        console.log("finalRate: ", finalRate);
+        const termBalanced = getsaving.balanced * (finalRate)*(getsaving.duration*cycles)/360;
+        const unlimitBalanced = getsaving.balanced * ((date - getsaving.duration * cycles) *0.015 / 360);
+        const withdrawBalance = getsaving.balanced + termBalanced + unlimitBalanced;
+        console.log('cycles', cycles);
+        console.log('termbalanced', termBalanced);
+        console.log('unbalanced', unlimitBalanced);
+        console.log('withdrawbalanced', withdrawBalance);
+
+        var convertedJSON = JSON.parse(JSON.stringify(getsaving));
+
+        convertedJSON.termBalanced = termBalanced;
+        convertedJSON.unlimitBalanced = unlimitBalanced;
+        convertedJSON.cycles = cycles;
+        console.log("checkadd", convertedJSON.termBalanced);
+        res.status(200).json(convertedJSON);
+
+    } catch (err) {
+        res.status(500).json({ error: err });
+    }
+}
+
 
 export const withdrawSaving =  async (req, res) => {
     try {
@@ -120,8 +179,15 @@ export const withdrawSaving =  async (req, res) => {
             { balanced: userNewBalanced },
             { new: true }
         );
+
+        var convertedJSON = JSON.parse(JSON.stringify(updateSaving));
+
+        convertedJSON.termBalanced = termBalanced;
+        convertedJSON.unlimitBalanced = unlimitBalanced;
+        convertedJSON.cycles = cycles;
         console.log("checkpoint");
-        res.status(200).json(updateSaving);
+
+        res.status(200).json(convertedJSON);
         
         
     } catch (err) {

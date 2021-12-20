@@ -1,5 +1,6 @@
 import { SavingModel } from "../models/savingModel.js";
 import { UserModel } from "../models/userModel.js";
+import { HistoryModel } from "../models/historyModel.js"
 
 export const getSaving = async (req, res) => {
     try{
@@ -36,7 +37,13 @@ export const createSaving = async (req, res) => {
 
         var convertedJSON = JSON.parse(JSON.stringify(saving));
         convertedJSON.userBalanced = usernewBalanced;
-
+        const history = {
+            userid: user._id,
+            detail: `Bạn đã tạo một sổ tiết kiệm online với số tiền ${newSaving.balanced} với thời hạn ${convertedJSON.duration/30} tháng`
+        }
+        const saveHistory = new HistoryModel(history);
+        await saveHistory.save();
+        console.log('history', saveHistory);
         res.status(200).json(convertedJSON);
         
     } catch (err) {
@@ -182,9 +189,9 @@ export const withdrawSaving =  async (req, res) => {
         //     { new: true}
         // );
         const userInfo = await UserModel.findById(getsaving.userID);
-        console.log("checkpoint", getsaving.userID);
+        //console.log("checkpoint", getsaving.userID);
         const userNewBalanced = userInfo.balanced + withdrawBalance;
-        console.log("checkpoint", userNewBalanced);
+        //console.log("checkpoint", userNewBalanced);
         const updateBalanced = await UserModel.findByIdAndUpdate(getsaving.userID,
             { balanced: userNewBalanced },
             { new: true }
@@ -196,6 +203,14 @@ export const withdrawSaving =  async (req, res) => {
         convertedJSON.unlimitBalanced = unlimitBalanced;
         convertedJSON.cycles = cycles;
         console.log("checkpoint");
+
+        const history = {
+            userid: userInfo._id,
+            detail: `Bạn đã rút sổ tiết kiệm ${convertedJSON.balanced}, ${convertedJSON.duration/30} tháng. Bạn đã gữi được ${convertedJSON.cycles} chu kỳ và tổng số tiền là ${convertedJSON.balancedWithdrawed}`
+        };
+        const saveHistory = new HistoryModel(history);
+        await saveHistory.save();
+        console.log('history', saveHistory);
 
         res.status(200).json(convertedJSON);
         

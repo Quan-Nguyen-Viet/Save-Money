@@ -9,6 +9,7 @@ const historySchema = new mongoose.Schema({
     type: String,
     default: ""
   }
-})
+}, { timestamps: true }
+)
 
 export const HistoryModel = mongoose.model('History', historySchema)

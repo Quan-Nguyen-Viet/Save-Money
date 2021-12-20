@@ -7,7 +7,6 @@ export const getSaving = async (req, res) => {
         
         //console.log('length', Object.keys(savings).length);
         var convertedJSON = JSON.parse(JSON.stringify(savings));
-        console.log('type convert', typeof(convertedJSON));
         for(var i = 0; i < (Object.keys(savings).length); i++  ) {
             var userInfo = await UserModel.findById(savings[i].userID);
             if(userInfo != null){
@@ -35,9 +34,10 @@ export const createSaving = async (req, res) => {
         const saving = new SavingModel(newSaving);
         await saving.save();
 
-        saving.newbalanced = usernewBalanced;
+        var convertedJSON = JSON.parse(JSON.stringify(saving));
+        convertedJSON.userBalanced = usernewBalanced;
 
-        res.status(200).json(saving);
+        res.status(200).json(convertedJSON);
         
     } catch (err) {
         res.status(500).json({error: err});

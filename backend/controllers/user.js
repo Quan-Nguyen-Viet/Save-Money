@@ -1,7 +1,8 @@
 import { UserModel } from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import {} from 'dotenv/config'
+import {} from 'dotenv/config';
+
 
 export const getAllUser = async(req, res) =>{
   try{
@@ -82,6 +83,7 @@ export const register = async(req, res) =>{
 export const deposit = async(req, res) => {
   try {
     const inputInfo = req.body;
+    console.log('check req after middleware', req.user);
     if(typeof(inputInfo.moneyDeposit) != 'number') res.status(500).json({error: 'Lỗi Input'});
     const userInfo = await UserModel.findById(inputInfo._id);
     const newbalanced = inputInfo.moneyDeposit + userInfo.balanced;

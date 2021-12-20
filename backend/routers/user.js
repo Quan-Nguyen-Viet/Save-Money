@@ -14,6 +14,7 @@ router.get('/logout', logout);
 router.delete('/deleteuser/:id', auth, authAdmin, deleteUser);
 
 router.get('/allusers', auth, authAdmin,getAllUser);
+//router.get('/allusers', getAllUser);
 
 router.get('/getusers/:id', getUser);
 

@@ -4,8 +4,18 @@ import { UserModel } from "../models/userModel.js";
 export const getSaving = async (req, res) => {
     try{
         const savings = await SavingModel.find();
-        console.log('saving', savings);
-        res.status(200).json(savings);
+        
+        //console.log('length', Object.keys(savings).length);
+        var convertedJSON = JSON.parse(JSON.stringify(savings));
+        console.log('type convert', typeof(convertedJSON));
+        for(var i = 0; i < (Object.keys(savings).length); i++  ) {
+            var userInfo = await UserModel.findById(savings[i].userID);
+            if(userInfo != null){
+                //console.log("name", userInfo.name);
+                convertedJSON[i].name = userInfo.name;
+            }
+        };
+        res.status(200).json(convertedJSON);
 
     } catch (err) {
         res.status(500).json({ error: err });
@@ -17,7 +27,7 @@ export const createSaving = async (req, res) => {
         const newSaving = req.body;
         const user = await UserModel.findById(newSaving.userID);
 
-        if(user.balanced < newSaving.balanced) return next(); //kiem tra so du tai khoan voi so tien gui
+        if(user.balanced < newSaving.balanced) return res.status(500).json({error: 'Số dư không đủ'}); //kiem tra so du tai khoan voi so tien gui
         
         const usernewBalanced = user.balanced - newSaving.balanced;
         console.log("newuserblanced: ", usernewBalanced);
@@ -113,7 +123,7 @@ export const withdrawSaving =  async (req, res) => {
         const savingid = req.body;
         console.log('test', savingid);
         const getsaving =  await SavingModel.findOne({_id: savingid._id});
-        if(getsaving.status != 1) return res.status(500).json({error: 'withdrawed'});
+        if(getsaving.status != 1) return res.status(500).json({error: 'Sổ đã rút'});
         var interestRate = 0;
         // % lai suat
         switch(getsaving.duration){

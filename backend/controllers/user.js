@@ -82,8 +82,10 @@ export const register = async(req, res) =>{
 export const deposit = async(req, res) => {
   try {
     const inputInfo = req.body;
+    if(typeof(inputInfo.moneyDeposit) != 'number') res.status(500).json({error: 'Lỗi Input'});
     const userInfo = await UserModel.findById(inputInfo._id);
     const newbalanced = inputInfo.moneyDeposit + userInfo.balanced;
+    if (newbalanced < 0) return res.status(500).json({error: 'Số dư không đủ'});
     const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
 
     

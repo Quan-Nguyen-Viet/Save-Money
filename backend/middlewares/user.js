@@ -12,7 +12,7 @@ export const verifyToken = (req, res, next) => {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = decoded;      
       console.log('test', decoded);
-      if(decoded.id != req.body._id) return res.status(403).send("User ID and Token are not matched");
+      if(decoded.id != req.body._id) return res.status(403).send("User ID and Token are not matched, try login again!");
       
       
     } catch (err) {
@@ -20,3 +20,4 @@ export const verifyToken = (req, res, next) => {
     }
     return next();
   };
+

@@ -2,6 +2,7 @@ import { UserModel } from "../models/userModel.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {} from 'dotenv/config';
+import { HistoryModel } from "../models/historyModel.js"
 
 
 export const getAllUser = async(req, res) =>{
@@ -87,9 +88,39 @@ export const deposit = async(req, res) => {
     if(typeof(inputInfo.moneyDeposit) != 'number') res.status(500).json({error: 'Lỗi Input'});
     const userInfo = await UserModel.findById(inputInfo._id);
     const newbalanced = inputInfo.moneyDeposit + userInfo.balanced;
+    const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
+
+    const history = { //tạo history
+      userid: user._id,
+      detail: `Bạn đã nạp ${inputInfo.moneyDeposit} VND vào tài khoản, số dư hiện tại của bạn là ${newbalanced} VND`
+  }
+  const saveHistory = new HistoryModel(history);
+  await saveHistory.save(); //save history
+    
+
+    res.status(200).json(userUpdate);
+    
+  } catch (err) {
+    res.status(500).json({error: err});
+  }
+}
+
+export const withdraw = async(req, res) => {
+  try {
+    const inputInfo = req.body;
+    if(typeof(inputInfo.moneyWithdraw) != 'number') res.status(500).json({error: 'Lỗi Input'});
+    if(inputInfo.moneyWithdraw < 0) res.status(500).json({error: 'Lỗi Input'}); //tránh trường hợp bug số âm
+    const userInfo = await UserModel.findById(inputInfo._id);
+    const newbalanced =  userInfo.balanced - inputInfo.moneyWithdraw;
     if (newbalanced < 0) return res.status(500).json({error: 'Số dư không đủ'});
     const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
 
+    const history = { //tạo history
+      userid: user._id,
+      detail: `Bạn đã rút ${inputInfo.moneyWithdraw} VND, số dư hiện tại của bạn là ${newbalanced} VND`
+  }
+  const saveHistory = new HistoryModel(history);
+  await saveHistory.save(); //save history
     
 
     res.status(200).json(userUpdate);

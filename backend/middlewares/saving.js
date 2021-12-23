@@ -12,7 +12,7 @@ export const verifyToken = (req, res, next) => {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
       req.user = decoded;      
       console.log('test', decoded);
-      if(decoded.id != req.body.userID) return res.status(401).send("User ID and Token are not matched");
+      if(decoded.id != req.body.userID) return res.status(401).send("User ID and Token are not matched, try login again!");
       
       
     } catch (err) {
@@ -20,3 +20,11 @@ export const verifyToken = (req, res, next) => {
     }
     return next();
   };
+
+  export const createSavingValidate = (req, res, next) => {
+    if(req.body.balanced < 0) return res.status(403).send("Money Saving can't be negative");
+    if(req.body.duration != 30 || req.body.duration != 90 || req.body.duration != 180 || req.body.duration != 270 || req.body.duration != 360 || req.body.duration != 720) return res.status(403).send("Please check duration");
+    return next();
+  };
+
+    

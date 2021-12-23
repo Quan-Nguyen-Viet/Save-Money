@@ -1,5 +1,5 @@
 import express from 'express';
-import { register, login, logout, refreshToken, getUser, deleteUser, getAllUser, updateUser, deposit } from '../controllers/user.js';
+import { register, login, logout, refreshToken, getUser, deleteUser, getAllUser, updateUser, deposit, withdraw } from '../controllers/user.js';
 import { auth } from '../middlewares/auth.js';
 import { authAdmin } from '../middlewares/authAdmin.js';
 import { verifyToken } from '../middlewares/user.js';
@@ -19,7 +19,9 @@ router.get('/alluserstest', getAllUser);
 
 router.get('/getusers/:id', getUser);
 
-router.post('/deposit', verifyToken, deposit);
+router.post('/deposit', verifyToken, deposit); //nạp tiền
+
+router.post('/withdraw', verifyToken, withdraw); //rút tiền
 
 router.put('/updateuser/:id',  updateUser);
 

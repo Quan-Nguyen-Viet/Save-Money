@@ -148,13 +148,13 @@ export const withdrawSaving =  async (req, res) => {
                 interestRate = 0.04;
                 break;
             case 360:
-                interestRate = 0.055;
+                interestRate = 0.055;   
                 break;
             default: 
                 interestRate = 0.053;
 
         }
-        const date = Math.floor((((new Date()).getTime() + 32154000000) - getsaving.inContract)/86400000);
+        const date = Math.floor((((new Date()).getTime()) - getsaving.inContract)/86400000);
         const cycles = Math.floor(date/getsaving.duration);
         var bonusRate = 0.0015*(cycles-1);
         if (bonusRate < 0) { 

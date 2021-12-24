@@ -23,7 +23,7 @@ export const verifyToken = (req, res, next) => {
 
   export const createSavingValidate = (req, res, next) => {
     if(req.body.balanced < 0) return res.status(403).send("Money Saving can't be negative");
-    if(req.body.duration != 30 || req.body.duration != 90 || req.body.duration != 180 || req.body.duration != 270 || req.body.duration != 360 || req.body.duration != 720) return res.status(403).send("Please check duration");
+    if(req.body.duration != 30 && req.body.duration != 90 && req.body.duration != 180 && req.body.duration != 270 && req.body.duration != 360 && req.body.duration != 720) return res.status(403).send("Please check duration");
     return next();
   };
 

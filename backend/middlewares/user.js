@@ -21,3 +21,12 @@ export const verifyToken = (req, res, next) => {
     return next();
   };
 
+  export const depositValidate = (req, res, next) => {
+    if(req.body.moneyDeposit < 0) return res.status(403).send("Money deposit can't be negative");
+    return next();
+  };
+
+  export const withdrawValidate = (req, res, next) => {
+    if(req.body.moneyWithdraw < 0) return res.status(403).send("Money withdraw can't be negative");
+    return next();
+  };

@@ -89,9 +89,8 @@ export const deposit = async(req, res) => {
     const userInfo = await UserModel.findById(inputInfo._id);
     const newbalanced = inputInfo.moneyDeposit + userInfo.balanced;
     const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
-
     const history = { //tạo history
-      userid: user._id,
+      userid: userUpdate._id,
       detail: `Bạn đã nạp ${inputInfo.moneyDeposit} VND vào tài khoản, số dư hiện tại của bạn là ${newbalanced} VND`
   }
   const saveHistory = new HistoryModel(history);
@@ -116,7 +115,7 @@ export const withdraw = async(req, res) => {
     const userUpdate = await UserModel.findByIdAndUpdate(inputInfo._id, { balanced: newbalanced }, { new: true });
 
     const history = { //tạo history
-      userid: user._id,
+      userid: userInfo._id,
       detail: `Bạn đã rút ${inputInfo.moneyWithdraw} VND, số dư hiện tại của bạn là ${newbalanced} VND`
   }
   const saveHistory = new HistoryModel(history);

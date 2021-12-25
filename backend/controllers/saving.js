@@ -39,6 +39,7 @@ export const createSaving = async (req, res) => {
         convertedJSON.userBalanced = usernewBalanced;
         const history = { //tạo history
             userid: user._id,
+            name: user.name,
             detail: `Bạn đã tạo một sổ tiết kiệm online với số tiền ${newSaving.balanced} với thời hạn ${convertedJSON.duration/30} tháng`
         }
         const saveHistory = new HistoryModel(history);
@@ -207,6 +208,7 @@ export const withdrawSaving =  async (req, res) => {
 
         const history = {
             userid: userInfo._id,
+            name: userInfo.name,
             detail: `Bạn đã rút sổ tiết kiệm ${convertedJSON.balanced}, ${convertedJSON.duration/30} tháng. Bạn đã gữi được ${convertedJSON.cycles} chu kỳ và tổng số tiền là ${convertedJSON.balancedWithdrawed}`
         };
         const saveHistory = new HistoryModel(history);

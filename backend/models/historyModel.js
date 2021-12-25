@@ -8,6 +8,10 @@ const historySchema = new mongoose.Schema({
   detail:{
     type: String,
     default: ""
+  },
+  name: {
+    type: String,
+    
   }
 }, { timestamps: true }
 )
